@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Place for Your Dinner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b0e659;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #040000;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], input[type="radio"], input[type="checkbox"] {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"].input-error {
+            background-color: rgb(255, 0, 0);
+            color: white;
+        }
+
+        .error {
+            color: rgb(252, 76, 76);
+            font-size: 12px;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        button {
+            background-color: #e99124;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #000000;
+        }
+
+        #asmitMessage {
+            margin-top: 20px;
+            color: #333;
+            font-size: 14px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Booking Place for Your Dinner</h1>
+
+        <label for="asmitName">Name:</label>
+        <input type="text" id="asmitName" name="asmitName" onblur="validateName()">
+        <div id="nameError" class="error"></div>
+
+        <label for="asmitPhone">Phone number:</label>
+        <input type="text" id="asmitPhone" name="asmitPhone" onblur="validatePhone()">
+        <div id="phoneError" class="error"></div>
+        
+        <label for="asmitTime">Select a time:</label>
+        <input type="radio" name="asmitTime" value="05:00" checked> 05:00<br>
+        <input type="radio" name="asmitTime" value="06:00"> 06:00<br>
+        <input type="radio" name="asmitTime" value="07:00"> 07:00<br>
+        <input type="radio" name="asmitTime" value="08:00"> 08:00<br><br>
+
+        <label>What would you like to have with us?</label>
+        <input type="checkbox" name="asmitOptions" value="Starters"> Starters<br>
+        <input type="checkbox" name="asmitOptions" value="Main Course"> Main Course<br>
+        <input type="checkbox" name="asmitOptions" value="Desserts"> Desserts<br>
+        <input type="checkbox" name="asmitOptions" value="Drinks"> Drinks<br><br>
+
+        <button id="submitButton" onclick="asmitDetails()" disabled>Submit</button>
+        <div id="asmitMessage"></div>
+    </div>
+
+    <script>
+        function validateName() {
+            var nameInput = document.getElementById("asmitName");
+            var nameError = document.getElementById("nameError");
+            var nameValue = nameInput.value.trim();
+
+            if (nameValue === "") {
+                nameError.textContent = "Error: Name is empty.";
+                nameInput.classList.add("input-error");
+                return false;
+            } else if (!nameValue.includes(" ") || nameValue.split(" ").length < 2) {
+                nameError.textContent = "Error: First and last names are required.";
+                nameInput.classList.add("input-error");
+                return false;
+            } else {
+                nameError.textContent = "";
+                nameInput.classList.remove("input-error");
+                return true;
+            }
+        }
+
+        function validatePhone() {
+            var phoneInput = document.getElementById("asmitPhone");
+            var phoneError = document.getElementById("phoneError");
+            var phoneValue = phoneInput.value.trim();
+
+            if (phoneValue === "") {
+                phoneError.textContent = "Error: Phone number is empty.";
+                phoneInput.classList.add("input-error");
+                return false;
+            } else if (phoneValue.length !== 6 || !/^[0-9]/.test(phoneValue)) {
+                phoneError.textContent = "Error: Phone numbers must have exactly 6 characters and start with a number.";
+                phoneInput.classList.add("input-error");
+                return false;
+            } else {
+                phoneError.textContent = "";
+                phoneInput.classList.remove("input-error");
+                return true;
+            }
+        }
+
+        function validateForm() {
+            var isNameValid = validateName();
+            var isPhoneValid = validatePhone();
+            var submitButton = document.getElementById("submitButton");
+
+            if (isNameValid && isPhoneValid) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        document.getElementById("asmitName").addEventListener("blur", function() {
+            validateName();
+            validateForm();
+        });
+        
+        document.getElementById("asmitPhone").addEventListener("blur", function() {
+            validatePhone();
+            validateForm();
+        });
+
+        function asmitDetails() {
+            var asmitName = document.getElementById("asmitName").value;
+            var asmitPhone = document.getElementById("asmitPhone").value;
+            var asmitTime = document.querySelector('input[name="asmitTime"]:checked').value;
+            var asmitOptions = document.querySelectorAll('input[name="asmitOptions"]:checked');
+            var asmitOptionItems = [];
+
+            asmitOptions.forEach(function(option) {
+                asmitOptionItems.push(option.value);
+            });
+
+            var asmitMessageDiv = document.getElementById("asmitMessage");
+            var optionsText = asmitOptionItems.length > 0 ? asmitOptionItems.join(", ") : "no options selected";
+            asmitMessageDiv.innerHTML = "Reservation for: " + asmitName + " (Phone: " + asmitPhone + ")at " + asmitTime + " with " + optionsText + ".";
+        }
+
+       
+        window.onload = validateForm;
+    </script>
+    
+</body>
+</html>
